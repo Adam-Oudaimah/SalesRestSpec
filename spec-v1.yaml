@@ -1,0 +1,259 @@
+openapi: 3.0.2
+info:
+  title: SalesService
+  version: "1"
+  description: This service interface is responsible for getting sales data.
+servers:
+  - url: http://{hostName}:8000/v1
+    description: Server-URL for first version.
+    variables:
+      hostName:
+        enum:
+          - sales-data-service
+          - localhost
+        default: sales-data-service
+        description: This value is assigned by the service provider.
+paths:
+  /products:
+    get:
+      summary: Get the available products in the store.
+      operationId: getProducts
+      responses:
+        200:
+          description: Products successfully fetched.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProductDAO"
+        404:
+          description: No products available in the store.
+        500:
+          description: Internal server error.
+  /products/create:
+    post:
+      summary: Store the new product.
+      operationId: createProduct
+      requestBody:
+        description: The new product metadata.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductDAO"
+      responses:
+        200:
+          description: The new product successfully stored.
+        500:
+          description: Internal server error.
+  /products/update:
+    post:
+      summary: Update an exsiting product metadata.
+      operationId: updateProduct
+      requestBody:
+        description: The updated product metadata.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductDAO"
+      responses:
+        200:
+          description: The product metadata successfully updated.
+        500:
+          description: Internal server error.
+
+  /clients:
+    get:
+      summary: Get the available clients.
+      operationId: getClients
+      responses:
+        200:
+          description: Clients successfully fetched.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ClientDAO"
+        404:
+          description: No clients available.
+        500:
+          description: Internal server error.
+  /clients/create:
+    post:
+      summary: Store the new client.
+      operationId: createClient
+      requestBody:
+        description: The new client metadata.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClientDAO"
+      responses:
+        200:
+          description: The new client successfully stored.
+        500:
+          description: Internal server error.
+  /clients/update:
+    post:
+      summary: Update an exsiting client metadata.
+      operationId: updateClient
+      requestBody:
+        description: The updated client metadata.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClientDAO"
+      responses:
+        200:
+          description: The client metadata successfully updated.
+        500:
+          description: Internal server error.
+
+  /sales:
+    get:
+      summary: Get the available sales operations.
+      operationId: getSalesOperations
+      responses:
+        200:
+          description: Sales operations successfully fetched.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SaleDAO"
+        404:
+          description: No sales operations available.
+        500:
+          description: Internal server error.
+  /sales/create:
+    post:
+      summary: Store the new sale operation.
+      operationId: createSaleOperation
+      requestBody:
+        description: The new sale operation metadata.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SaleDAO"
+      responses:
+        200:
+          description: The new sale operation successfully stored.
+        403:
+          description: Storing the new sale operation could not be completed.
+        404:
+          description: Storing the new sale operation could not be completed because some meta data (product or seller or client could not be found).
+        500:
+          description: Internal server error.
+  /sales/update:
+    post:
+      summary: Update an exsiting sale operation metadata.
+      operationId: updateSaleOperation
+      requestBody:
+        description: The updated sale operation metadata.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SaleDAO"
+      responses:
+        200:
+          description: The sale operation metadata successfully updated.
+        403:
+          description: Updating the sale operation metadata could not be completed.
+        500:
+          description: Internal server error.
+
+components:
+  schemas:
+    ProductDAO:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        quantity:
+          type: integer
+        price:
+          type: number
+          format: float
+        description:
+          type: string
+        category:
+          type: string
+        creation_date:
+          type: string
+          format: date
+        owner_id:
+          type: string
+      required:
+        - name
+        - description
+        - category
+        - creation_date
+        - owner_id
+
+    ClientDAO:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        last_name:
+          type: string
+        mobile:
+          type: string
+      required:
+        - name
+        - last_name
+        - mobile
+
+    OrderDetail:
+      type: object
+      properties:
+        id:
+          type: string
+        sale_id:
+          type: string
+        product_id:
+          type: string
+        product_price:
+          type: number
+          format: float
+        quantity:
+          type: integer
+      required:
+        - product_id
+        - quantity
+
+    SaleDAO:
+      type: object
+      properties:
+        id:
+          type: string
+        creation_date:
+          type: string
+          format: date
+        client:
+          type: string
+        seller:
+          type: string
+        order:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderDetail"
+        total:
+          type: number
+          format: float
+      required:
+        - client
+        - seller
+        - order
