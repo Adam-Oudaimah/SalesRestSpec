@@ -47,9 +47,16 @@ paths:
           description: The new product successfully stored.
         500:
           description: Internal server error.
-  /products/update:
-    post:
+  /products/{productId}/update:
+    put:
       summary: Update an exsiting product metadata.
+      parameters:
+        - in: path
+          name: productId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the product to get
       operationId: updateProduct
       requestBody:
         description: The updated product metadata.
@@ -61,6 +68,8 @@ paths:
       responses:
         200:
           description: The product metadata successfully updated.
+        404:
+          description: Updating the product could not be completed because it could not be found.
         500:
           description: Internal server error.
 
@@ -97,9 +106,16 @@ paths:
           description: The new client successfully stored.
         500:
           description: Internal server error.
-  /clients/update:
-    post:
+  /clients/{clientId}/update:
+    put:
       summary: Update an exsiting client metadata.
+      parameters:
+        - in: path
+          name: clientId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the client to get
       operationId: updateClient
       requestBody:
         description: The updated client metadata.
@@ -111,6 +127,8 @@ paths:
       responses:
         200:
           description: The client metadata successfully updated.
+        404:
+          description: Updating the client could not be completed because it could not be found.
         500:
           description: Internal server error.
 
@@ -148,12 +166,19 @@ paths:
         403:
           description: Storing the new sale operation could not be completed.
         404:
-          description: Storing the new sale operation could not be completed because some meta data (product or seller or client could not be found).
+          description: Storing the new sale operation could not be completed because some meta data (product or seller or client) could not be found.
         500:
           description: Internal server error.
-  /sales/update:
-    post:
+  /sales/{saleId}/update:
+    put:
       summary: Update an exsiting sale operation metadata.
+      parameters:
+        - in: path
+          name: saleId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the client to get
       operationId: updateSaleOperation
       requestBody:
         description: The updated sale operation metadata.
@@ -167,6 +192,8 @@ paths:
           description: The sale operation metadata successfully updated.
         403:
           description: Updating the sale operation metadata could not be completed.
+        404:
+          description: Updating the sale operation could not be completed because some meta data could not be found.
         500:
           description: Internal server error.
 
